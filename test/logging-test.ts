@@ -6,6 +6,7 @@ QUnit.module('Logging through the printer');
 QUnit.test('Logger @ level 4', assert => {
     const printer = makeTestPrinter();
     const logger = new Logger(4, printer); // only warns and error
+    const L = Logger;
     logger.warn('a warning');
     logCountAssert({ message: 'after a warning', assert, logger, printer }, { e: 0, w: 1, l: 0, d: 0 });
     logger.error('an error');

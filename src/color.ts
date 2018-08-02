@@ -1,1 +1,1 @@
-export default {red: 'color: red'};
+export default {red: 'color: red', blue: 'color:blue', yellow: 'color: yellow'};

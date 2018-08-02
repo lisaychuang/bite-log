@@ -16,6 +16,17 @@ QUnit.test('Logger', assert => {
 // logger
 
 // logger
-//   .bgWhite.red('my message')
-//   .blue.large('another');
+//   .bgWhite.red.txt('my message')
+//   .blue.large.txt('another');
 //   .debug();
+
+// logger
+//   .bgWhite.red.txt('my message')
+//   .blue.large.debug('another');
+
+
+// msgsAndStyles
+// [ 
+//   ['hello', 'color: red'],
+//   ['Im yellow', 'background: yellow']
+// ]
