@@ -1,4 +1,4 @@
-import Logger from "bite-log";
+import Logger from 'bite-log';
 import { logCountAssert, makeTestPrinter } from './test-helpers';
 
 QUnit.module('The ability to color console messages');
@@ -18,8 +18,7 @@ QUnit.test('Logger in red works', assert => {
     {
       message: 'after logging in red, we should see one log message',
       assert,
-      printer,
-      logger
+      printer
     },
     { e: 0, w: 0, l: 1, d: 0 }
   );

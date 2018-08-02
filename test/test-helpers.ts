@@ -24,14 +24,12 @@ export function makeTestPrinter(): Printer & { messages: any } {
   return printer;
 }
 
-
 export function logCountAssert(
   {
     message,
     assert,
-    logger,
     printer
-  }: { message: string; assert: Assert; logger: Logger; printer: Printer },
+  }: { message: string; assert: Assert;  printer: Printer; },
   { e, w, l, d }: { e: number; w: number; l: number; d: number }
 ) {
   assert.equal(

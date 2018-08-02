@@ -26,14 +26,15 @@ export interface Printer {
   debug: typeof console.debug;
 }
 
-type ILoggerInstance = Printer & {
+export type ILoggerInstance = Printer & {
   [K in keyof typeof COLORS]: ILoggerInstance
-} & { 
+} & {
   txt(str: string): ILoggerInstance
 };
-type ILogger = {
+// tslint:disable-next-line:interface-name
+export interface ILogger {
   new(level?: number, printer?: Printer): ILoggerInstance;
-};
+}
 
 /**
  * A class which allows for colorful, tagged logging
@@ -68,8 +69,7 @@ class Logger {
   }
 
   /** Stage a string and accumulated styles for later console functions */
-  txt(str: string){
-    debugger;
+  txt(str: string) {
     this.msgsAndStyles.push([str, this.stylesInProgress.join('')]);
     this.stylesInProgress = [];
     return this;
@@ -115,10 +115,11 @@ class Logger {
       if (COLORS.hasOwnProperty(c)) {
         // Define a new property on this, of name c (i.e. "red")
         //  that is getter-based (instead of value based)
+        const self = this;
         Object.defineProperty(this, c, {
           get() {
             const cStyle = COLORS[c as keyof typeof COLORS]; // i.e. ('color: red;')
-            this.stylesInProgress.push(cStyle);
+            self.stylesInProgress.push(cStyle);
             return this;
           }
         });
@@ -148,7 +149,4 @@ class Logger {
   }
 }
 
-window.logger = new Logger(4);
-
-const exp: ILogger = Logger as any;
-export default exp ;
+export default (Logger as any) as ILogger;

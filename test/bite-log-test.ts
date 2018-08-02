@@ -26,7 +26,7 @@ QUnit.test('Logger', assert => {
 
 
 // msgsAndStyles
-// [ 
+// [
 //   ['hello', 'color: red'],
 //   ['Im yellow', 'background: yellow']
 // ]
