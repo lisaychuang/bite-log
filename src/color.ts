@@ -1,5 +1,0 @@
-export default {
-  red: 'color: red',
-  blue: 'color:blue',
-  yellow: 'color: yellow'
-};
