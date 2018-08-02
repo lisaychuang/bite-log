@@ -1,4 +1,4 @@
-import COLORS from './color';
+import COLOR_STYLES from './styles';
 
 // Log levels (lower number are more severe)
 const LVL_ERROR = 1;
@@ -27,7 +27,7 @@ export interface Printer {
 }
 
 export type ILoggerInstance = Printer & {
-  [K in keyof typeof COLORS]: ILoggerInstance
+  [K in keyof typeof COLOR_STYLES]: ILoggerInstance
 } & {
   txt(str: string): ILoggerInstance
 };
@@ -97,7 +97,7 @@ class Logger {
   }
 
   /**
-   * According to the styles in './color.ts', set up
+   * According to the COLOR_STYLES in './style.ts', set up
    * a property for each, kind of like
    * ```ts
    *   {
@@ -110,15 +110,15 @@ class Logger {
    */
   private setupStyles() {
     // Loop over each style name (i.e. "red")
-    for (let c in COLORS) {
+    for (let c in COLOR_STYLES) {
       // Make sure the property is on the instance, not the prototype
-      if (COLORS.hasOwnProperty(c)) {
+      if (COLOR_STYLES.hasOwnProperty(c)) {
         // Define a new property on this, of name c (i.e. "red")
         //  that is getter-based (instead of value based)
         const self = this;
         Object.defineProperty(this, c, {
           get() {
-            const cStyle = COLORS[c as keyof typeof COLORS]; // i.e. ('color: red;')
+            const cStyle = COLOR_STYLES[c as keyof typeof COLOR_STYLES]; // i.e. ('color: red;')
             self.stylesInProgress.push(cStyle);
             return this;
           }
