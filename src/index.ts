@@ -30,6 +30,8 @@ export type ILoggerInstance = Printer & {
   [K in keyof typeof COLOR_STYLES]: ILoggerInstance
 } & {
   txt(str: string): ILoggerInstance
+  pushPrefix(str: string): ILoggerInstance
+  popPrefix(): ILoggerInstance
 };
 // tslint:disable-next-line:interface-name
 export interface ILogger {
@@ -49,6 +51,9 @@ class Logger {
   // An array of current styles
   private stylesInProgress: string[] = [];
 
+  // An array of prefixes that go at the beginning of each message
+  private prefixesAndStyles: Array<[string, string]> = [];
+
   // An array of message & their associated styles
   private msgsAndStyles: Array<[string, string]> = [];
 
@@ -61,6 +66,48 @@ class Logger {
     this.level = level;
     this.printer = printer;
     this.setupStyles();
+  }
+
+  /**
+   * Adds a prefix that will be applied to all messages.
+   * This is useful for indicating the context in which a message is logged,
+   * without forcing developers to "re-state" that context over and over.
+   *
+   * @example
+   * ```ts
+   * const logger = new Logger();
+   *
+   * function fooFunction() {
+   *   logger.pushPrefix('foo');
+   *   ...
+   *   logger.log('hello');
+   *   logger.log('world');
+   *   ...
+   *    logger.popPrefix();
+   * }
+   *
+   * logger.log('begin');   // "begin"
+   * fooFunction();         // "[foo] hello"
+   *                        // "[foo] world"
+   * logger.log('end');     // "end"
+   *
+   * ```
+   * @param name the name of the tag
+   */
+  pushPrefix(name: string) {
+    this.prefixesAndStyles.push([name, this.stylesInProgress.join('')]);
+    this.stylesInProgress = [];
+    return this;
+  }
+
+  /**
+   * Remove the most recently added prefix from the logger
+   *
+   * @see {Logger.pushPrefix}
+   */
+  popPrefix() {
+    this.prefixesAndStyles.pop();
+    return this;
   }
 
   css(style: string) {
@@ -138,11 +185,15 @@ class Logger {
       let logFunction = this.printer[functionName];
       let allMsgs = '';
       let allStyles: string[] = [];
+      for (let [msg, style] of this.prefixesAndStyles) {
+        allMsgs += `%c[${msg}]`;
+        allStyles.push(style);
+      }
+      if (allMsgs.length > 0) allMsgs += ' ';
       for (let [msg, style] of this.msgsAndStyles) {
         allMsgs += `%c ${msg}`;
         allStyles.push(style);
       }
-
       logFunction(allMsgs, ...allStyles);
       this.msgsAndStyles = [];
     }

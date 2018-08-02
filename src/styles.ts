@@ -1,6 +1,6 @@
 import X11_COLORS from './colors';
 
-interface StyleObj { [k: string]: string; };
+interface StyleObj { [k: string]: string; }
 
 const COLOR_STYLES: StyleObj = { };
 for (let c of X11_COLORS) {
@@ -15,6 +15,6 @@ for (let c of X11_COLORS) {
 // };
 
 export default {
-  ...COLOR_STYLES,
+  ...COLOR_STYLES // ,
   // ...fontStyles
 };
