@@ -87,8 +87,8 @@ class Logger {
    * }
    *
    * logger.log('begin');   // "begin"
-   * fooFunction();         // "[foo]: hello"
-   *                        // "[foo]: world"
+   * fooFunction();         // "[foo] hello"
+   *                        // "[foo] world"
    * logger.log('end');     // "end"
    *
    * ```
@@ -189,7 +189,7 @@ class Logger {
         allMsgs += `%c[${msg}]`;
         allStyles.push(style);
       }
-      if (allMsgs.length > 0) allMsgs += ': ';
+      if (allMsgs.length > 0) allMsgs += ' ';
       for (let [msg, style] of this.msgsAndStyles) {
         allMsgs += `%c ${msg}`;
         allStyles.push(style);
