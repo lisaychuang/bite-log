@@ -3,22 +3,22 @@ import { Printer } from 'bite-log';
 export function makeTestPrinter(): Printer & { messages: any } {
   const printer = {
     messages: {
-      log: [] as string[],
-      debug: [] as string[],
-      warn: [] as string[],
-      error: [] as string[]
+      log: [] as any[][],
+      debug: [] as any[][],
+      warn: [] as any[][],
+      error: [] as any[][]
     },
-    log(msg: string) {
-      printer.messages.log.push(msg);
+    log(_msg: string) {
+      printer.messages.log.push([...arguments]);
     },
-    debug(msg: string) {
-      printer.messages.debug.push(msg);
+    debug(_msg: string) {
+      printer.messages.debug.push([...arguments]);
     },
-    warn(msg: string) {
-      printer.messages.warn.push(msg);
+    warn(_msg: string) {
+      printer.messages.warn.push([...arguments]);
     },
-    error(msg: string) {
-      printer.messages.error.push(msg);
+    error(_msg: string) {
+      printer.messages.error.push([...arguments]);
     }
   };
   return printer;
@@ -29,27 +29,35 @@ export function logCountAssert(
     message,
     assert,
     printer
-  }: { message: string; assert: Assert;  printer: Printer; },
-  { e, w, l, d }: { e: number; w: number; l: number; d: number }
+  }: { message: string; assert: Assert; printer: Printer },
+  { e, w, l, d }: { e?: number; w?: number; l?: number; d?: number }
 ) {
-  assert.equal(
-    (printer as any).messages.error.length,
-    e,
-    `${message}: ${e} error(s) were logged`
-  );
-  assert.equal(
-    (printer as any).messages.warn.length,
-    w,
-    `${message}: ${w} warning(s) was logged`
-  );
-  assert.equal(
-    (printer as any).messages.debug.length,
-    d,
-    `${message}: ${d} debug(s) were logged`
-  );
-  assert.equal(
-    (printer as any).messages.log.length,
-    l,
-    `${message}: ${l} log(s) were logged`
-  );
+  if (typeof e !== 'undefined') {
+    assert.equal(
+      (printer as any).messages.error.length,
+      e,
+      `${message}: ${e} error(s) were logged`
+    );
+  }
+  if (typeof w !== 'undefined') {
+    assert.equal(
+      (printer as any).messages.warn.length,
+      w,
+      `${message}: ${w} warning(s) was logged`
+    );
+  }
+  if (typeof d !== 'undefined') {
+    assert.equal(
+      (printer as any).messages.debug.length,
+      d,
+      `${message}: ${d} debug(s) were logged`
+    );
+  }
+  if (typeof l !== 'undefined') {
+    assert.equal(
+      (printer as any).messages.log.length,
+      l,
+      `${message}: ${l} log(s) were logged`
+    );
+  }
 }
