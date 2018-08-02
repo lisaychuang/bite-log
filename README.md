@@ -1,3 +1,3 @@
 # bite-log
 
-A brand new TypeScript library.
+A bite size colorful and tagged logger for Node and browsers

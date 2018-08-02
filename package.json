@@ -1,7 +1,7 @@
 {
   "name": "bite-log",
-  "version": "0.5.0",
-  "description": "A brand new TypeScript library.",
+  "version": "0.0.0-development",
+  "description": "A bite size colorful and tagged logger for Node and browsers",
   "main": "dist/commonjs/src/index.js",
   "module": "dist/modules/src/index.js",
   "types": "dist/types/src/index.d.ts",
@@ -19,19 +19,27 @@
     "build-tests": "ember build",
     "pretest": "npm run problems",
     "test": "ember test",
-    "tdd": "ember test --server"
+    "tdd": "ember test --server",
+    "travis-deploy-once": "travis-deploy-once",
+    "semantic-release": "semantic-release"
   },
   "license": "MIT",
   "devDependencies": {
     "@types/qunit": "^2.0.31",
     "ember-cli": "^3.1.4",
-    "libkit": "^0.7.0-beta.1",
+    "libkit": "0.6.0",
     "qunit": "^2.4.1",
     "shelljs": "^0.7.8",
     "tslint": "^5.7.0",
-    "typescript": "^2.4.2"
+    "typescript": "^2.4.2",
+    "travis-deploy-once": "^5.0.1",
+    "semantic-release": "^15.9.3"
   },
   "dependencies": {
     "ts-std": "^0.6.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lisaychuang/bite-log.git"
   }
 }
