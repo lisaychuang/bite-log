@@ -29,6 +29,7 @@ export interface Printer {
 export type ILoggerInstance = Printer & {
   [K in keyof typeof COLOR_STYLES]: ILoggerInstance
 } & {
+  css(str: string): ILoggerInstance
   txt(str: string): ILoggerInstance
   pushPrefix(str: string): ILoggerInstance
   popPrefix(): ILoggerInstance
