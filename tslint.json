@@ -19,6 +19,7 @@
         "named-imports-order": "lowercase-last"
       }
     ],
+    "no-consecutive-blank-lines": false,
     "prefer-const": false,
     "quotemark": [true, "single"],
     "trailing-comma": [true, { "multiline": "never", "singleline": "never" }],
