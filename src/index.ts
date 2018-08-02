@@ -1,3 +1,5 @@
+import COLORS from './color';
+
 // Log levels (lower number are more severe)
 const LVL_ERROR = 1;
 const LVL_WARN = 2;
@@ -24,6 +26,13 @@ export interface Printer {
   debug: typeof console.debug;
 }
 
+type ILoggerInstance = Printer & {
+  [K in keyof typeof COLORS]: ILoggerInstance
+};
+type ILogger = {
+  new(level?: number, printer?: Printer): ILoggerInstance;
+};
+
 /**
  * A class which allows for colorful, tagged logging
  */
@@ -43,6 +52,7 @@ class Logger {
   constructor(level: number = 2, printer: Printer = console) {
     this.level = level;
     this.printer = printer;
+    this.setupStyles();
   }
 
   /** Log an error message */
@@ -62,6 +72,18 @@ class Logger {
     return this.printMessage(LVL_DEBUG, str);
   }
 
+  private setupStyles() {
+    for (let c in COLORS) {
+      if (COLORS.hasOwnProperty(c)) {
+        Object.defineProperty(this, c, {
+          get() {
+            return this;
+          }
+        });
+      }
+    }
+  }
+
   /**
    * Actually print the message to the printer (maybe console.*)
    * @param level the level of the current message
@@ -76,4 +98,5 @@ class Logger {
   }
 }
 
-export default Logger;
+const exp: ILogger = Logger as any;
+export default exp ;
