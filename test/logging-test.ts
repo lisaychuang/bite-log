@@ -1,11 +1,11 @@
-import Logger from 'bite-log';
+import Logger, { Level } from 'bite-log'
 import { logCountAssert, makeTestPrinter } from './test-helpers';
 
 QUnit.module('Logging through the printer');
 
 QUnit.test('Logger @ level 4', assert => {
   const printer = makeTestPrinter();
-  const logger = new Logger(4, printer); // only warns and error
+  const logger = new Logger(Level.debug, printer); // only warns and error
   logger.warn('a warning');
   logCountAssert(
     { message: 'after a warning', assert, printer },
@@ -30,7 +30,7 @@ QUnit.test('Logger @ level 4', assert => {
 
 QUnit.test('Logger @ level 2', assert => {
   const printer = makeTestPrinter();
-  const logger = new Logger(2, printer); // only warns and error
+  const logger = new Logger(Level.warn, printer); // only warns and error
   logger.warn('a warning');
   logCountAssert(
     { message: 'after logging a warning', assert, printer },

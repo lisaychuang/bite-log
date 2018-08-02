@@ -1,11 +1,11 @@
-import Logger from 'bite-log';
+import Logger, { Level } from 'bite-log'
 import { makeTestPrinter } from './test-helpers';
 
 QUnit.module('Log messages with colors');
 
 QUnit.test('Logging with 1 style per message', assert => {
   const printer = makeTestPrinter();
-  const logger = new Logger(4, printer);
+  const logger = new Logger(Level.debug, printer);
   logger.red.warn('a warning');
   logger.red.debug('a debug');
   logger.red.log('a log');

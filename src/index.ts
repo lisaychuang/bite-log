@@ -1,17 +1,19 @@
 import COLOR_STYLES from './styles';
 
 // Log levels (lower number are more severe)
-const LVL_ERROR = 1;
-const LVL_WARN = 2;
-const LVL_LOG = 3;
-const LVL_DEBUG = 4;
+export const enum Level {
+  error = 1,
+  warn = 2,
+  log = 3,
+  debug = 4
+}
 
 // Names of the functions corresponding to Log levels (console.log style)
 const CONSOLE_FUNCTIONS: { [k: number]: keyof Printer } = {
-  [LVL_ERROR]: 'error',
-  [LVL_WARN]: 'warn',
-  [LVL_LOG]: 'log',
-  [LVL_DEBUG]: 'debug'
+  [Level.error]: 'error',
+  [Level.warn]: 'warn',
+  [Level.log]: 'log',
+  [Level.debug]: 'debug'
 };
 
 /**
@@ -36,7 +38,7 @@ export type ILoggerInstance = Printer & {
 };
 // tslint:disable-next-line:interface-name
 export interface ILogger {
-  new(level?: number, printer?: Printer): ILoggerInstance;
+  new(Level?: number, printer?: Printer): ILoggerInstance;
 }
 
 /**
@@ -126,22 +128,22 @@ class Logger {
   /** Log an error message */
   error(str?: string) {
     if (typeof str !== 'undefined') this.txt(str);
-    return this.printMessage(LVL_ERROR);
+    return this.printMessage(Level.error);
   }
   /** Log a warning */
   warn(str?: string) {
     if (typeof str !== 'undefined') this.txt(str);
-    return this.printMessage(LVL_WARN);
+    return this.printMessage(Level.warn);
   }
   /** Print some general information */
   log(str?: string) {
     if (typeof str !== 'undefined') this.txt(str);
-    return this.printMessage(LVL_LOG);
+    return this.printMessage(Level.log);
   }
   /** Print something for debugging purposes only */
   debug(str?: string) {
     if (typeof str !== 'undefined') this.txt(str);
-    return this.printMessage(LVL_DEBUG);
+    return this.printMessage(Level.debug);
   }
 
   /**

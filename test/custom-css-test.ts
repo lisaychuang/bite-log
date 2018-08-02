@@ -1,10 +1,10 @@
-import Logger from 'bite-log';
+import Logger, { Level } from 'bite-log'
 import { makeTestPrinter } from './test-helpers';
 
 QUnit.module('Custom CSS test');
 QUnit.test('Custom CSS can be applied', assert => {
   const printer = makeTestPrinter();
-  const logger = new Logger(4, printer);
+  const logger = new Logger(Level.debug, printer);
 
   // log something with custom css
   logger.css('color: #aaa').warn('a warning');

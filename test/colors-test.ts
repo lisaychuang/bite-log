@@ -1,11 +1,11 @@
-import Logger from 'bite-log';
+import Logger, { Level } from 'bite-log'
 import { logCountAssert, makeTestPrinter } from './test-helpers';
 
 QUnit.module('The ability to color console messages');
 
 QUnit.test('Logger in red works', assert => {
   const printer = makeTestPrinter();
-  const logger = new Logger(4, printer);
+  const logger = new Logger(Level.debug, printer);
   assert.ok(logger.red instanceof Logger, 'logger.red is a logger');
   assert.equal(
     typeof logger.red.log,
@@ -26,7 +26,7 @@ QUnit.test('Logger in red works', assert => {
 
 QUnit.test('Logger in blue background works', assert => {
     const printer = makeTestPrinter();
-    const logger = new Logger(4, printer);
+    const logger = new Logger(Level.debug, printer);
     assert.ok(logger.bgBlue instanceof Logger, 'logger.bgBlue is a logger');
     assert.equal(
       typeof logger.bgBlue.log,

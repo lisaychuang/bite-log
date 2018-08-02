@@ -1,4 +1,4 @@
-import Logger from 'bite-log';
+import Logger, { Level } from 'bite-log'
 import { logCountAssert, makeTestPrinter } from './test-helpers';
 
 QUnit.module('Tagged logging');
@@ -7,7 +7,7 @@ QUnit.test(
   'Pushing a tag results in the log mesages being prefixed',
   assert => {
     const printer = makeTestPrinter();
-    const logger = new Logger(4, printer);
+    const logger = new Logger(Level.debug, printer);
     logger.log('hello');          // "hello"
     logger.log('world');          // "world"
     logger.pushPrefix('foo');
