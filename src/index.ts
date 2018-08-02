@@ -191,7 +191,7 @@ class Logger {
       }
       if (allMsgs.length > 0) allMsgs += ' ';
       for (let [msg, style] of this.msgsAndStyles) {
-        allMsgs += `%c ${msg}`;
+        allMsgs += `%c${msg}`;
         allStyles.push(style);
       }
       logFunction(allMsgs, ...allStyles);
