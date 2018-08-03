@@ -1,4 +1,4 @@
-import { BgColors, FontStyles, TextColors } from './style-types';
+import { BgColors, FontSizes, FontStyles, TextColors } from './style-types';
 import COLOR_STYLES from './styles';
 
 // Log levels (lower number are more severe)
@@ -191,12 +191,16 @@ class Logger {
   }
 }
 
-export type LoggerWithStyles = Logger & {
-  [K in keyof (TextColors & BgColors & FontStyles )]: LoggerWithStyles;
-};
+export type LoggerWithStyles = Logger &
+  {
+    [K in keyof (TextColors &
+      BgColors &
+      FontStyles &
+      FontSizes)]: LoggerWithStyles
+  };
 
 export interface LoggerConstructor {
-  new(level?: Level, printer?: Printer): LoggerWithStyles;
+  new (level?: Level, printer?: Printer): LoggerWithStyles;
 }
 
 export default Logger as LoggerConstructor;

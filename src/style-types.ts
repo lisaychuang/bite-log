@@ -292,3 +292,8 @@ export interface FontStyles {
   underline: string;
   strikethrough: string;
 }
+
+export interface FontSizes {
+  big: string;
+  huge: string;
+}
