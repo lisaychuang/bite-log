@@ -1,4 +1,4 @@
-import Logger, { Level } from 'bite-log'
+import Logger, { Level } from 'bite-log';
 import { logCountAssert, makeTestPrinter } from './test-helpers';
 
 QUnit.module('Tagged logging');

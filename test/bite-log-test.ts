@@ -1,4 +1,4 @@
-import Logger, { Level } from 'bite-log'
+import Logger, { Level } from 'bite-log';
 
 QUnit.module('bite-log tests');
 

@@ -1,4 +1,6 @@
-const X11_COLORS = [
+import { BgColors, TextColors } from './style-types';
+
+const X11_COLORS: Array<keyof (TextColors & BgColors)> = [
     'aliceBlue',
     'antiqueWhite',
     'aqua',
