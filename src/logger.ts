@@ -101,6 +101,7 @@ class Logger {
     return this;
   }
 
+  /** Add custom CSS styles */
   css(style: string) {
     this.stylesInProgress.push(style);
     return this;
@@ -113,22 +114,22 @@ class Logger {
     return this;
   }
 
-  /** Log an error message */
+  // Log an error message
   error(str?: string) {
     if (typeof str !== 'undefined') this.txt(str);
     return this.printMessage(Level.error);
   }
-  /** Log a warning */
+  // Log a warning
   warn(str?: string) {
     if (typeof str !== 'undefined') this.txt(str);
     return this.printMessage(Level.warn);
   }
-  /** Print some general information */
+  // Print some general information
   log(str?: string) {
     if (typeof str !== 'undefined') this.txt(str);
     return this.printMessage(Level.log);
   }
-  /** Print something for debugging purposes only */
+  // Print something for debugging purposes only
   debug(str?: string) {
     if (typeof str !== 'undefined') this.txt(str);
     return this.printMessage(Level.debug);
@@ -176,14 +177,29 @@ class Logger {
       let logFunction = this.printer[functionName];
       let allMsgs = '';
       let allStyles: string[] = [];
+
+      /** Flush all prefix and styles into msgsAndStyles
+       * Note: there may not be styles associated with a message or prefix!
+       */
       for (let [msg, style] of this.prefixesAndStyles) {
-        allMsgs += `%c[${msg}]`;
-        allStyles.push(style);
+        if (style) {
+          allMsgs += `%c[${msg}]`;
+          allStyles.push(style); // Only add style to allStyles if present
+        } else {
+          allMsgs += `[${msg}]`;
+        }
       }
-      if (allMsgs.length > 0) allMsgs += ' ';
+      if (allMsgs.length > 0) {
+        allMsgs += '%c '; // space between prefixes and rest of logged message
+        allStyles.push('color: inherit; background-color: transparent;');
+      }
       for (let [msg, style] of this.msgsAndStyles) {
-        allMsgs += `%c${msg}`;
-        allStyles.push(style);
+        if (style) {
+          allMsgs += `%c${msg}`;
+          allStyles.push(style); // only add style to allStyles if present
+        } else {
+          allMsgs += `%c${msg}`;
+        }
       }
       logFunction(allMsgs, ...allStyles);
       this.msgsAndStyles = [];

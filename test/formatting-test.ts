@@ -53,3 +53,23 @@ QUnit.test('Logging with multiple styles per message', assert => {
     ['%cHouston, we have a problem', 'font-size: 1.5em;']
   ]);
 });
+
+QUnit.test('Prefixes are styled correctly', assert => {
+  const printer = makeTestPrinter();
+  const logger = new Logger(Level.warn, printer);
+  logger.pushPrefix('prefix');
+  logger.error('Prefix this error');
+
+  // Make sure Prefix is styled %c[prefix]%c
+  assert.deepEqual(
+    printer.messages.error[0][0],
+    '[prefix]%c %cPrefix this error' // console.log('%c[]......')
+  );
+  assert.ok(
+    printer.messages.error[0].indexOf(
+      // search ALL arguments that might have been passed to console.log
+      'color: inherit; background-color: transparent;'
+    ) >= 0,
+    'I found the style for a "blank space" somewhere'
+  );
+});
