@@ -1,4 +1,4 @@
-import Logger, { Level } from 'bite-log'
+import Logger, { Level } from 'bite-log';
 import { makeTestPrinter } from './test-helpers';
 
 QUnit.module('Log messages with colors');

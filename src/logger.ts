@@ -195,8 +195,8 @@ export type LoggerWithStyles = Logger & {
   [K in keyof (TextColors & BgColors)]: LoggerWithStyles;
 };
 
-interface Logger {
+export interface LoggerConstructor {
   new(level?: Level, printer?: Printer): LoggerWithStyles;
 }
 
-export default Logger;
+export default Logger as LoggerConstructor;

@@ -1,1 +1,1 @@
-export { default as Logger, LoggerWithStyles } from './logger';
+export { default, LoggerWithStyles, Level, Printer } from './logger';
