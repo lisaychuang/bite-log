@@ -27,8 +27,13 @@ const FONT_SIZES: StyleObj = {
   huge: 'font-size: 2em;'
 };
 
-export default {
+export const WHITE_SPACE_STYLE =
+  'color: inherit; background-color: transparent;';
+
+const stylesToPutOnLogger = {
   ...COLOR_STYLES,
   ...FONT_STYLES,
   ...FONT_SIZES
 };
+
+export default stylesToPutOnLogger;

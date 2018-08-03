@@ -1,5 +1,5 @@
 import { BgColors, FontSizes, FontStyles, TextColors } from './style-types';
-import COLOR_STYLES from './styles';
+import logStyles, { WHITE_SPACE_STYLE } from './styles';
 
 // Log levels (lower number are more severe)
 export const enum Level {
@@ -101,6 +101,11 @@ export class Logger {
     return this;
   }
 
+  /**
+   * Add custom CSS styles
+   * @param style
+   * a string of CSS, similar to what you'd use for <div style="">
+   */
   css(style: string) {
     this.stylesInProgress.push(style);
     return this;
@@ -113,22 +118,22 @@ export class Logger {
     return this;
   }
 
-  /** Log an error message */
+  // Log an error message
   error(str?: string) {
     if (typeof str !== 'undefined') this.txt(str);
     return this.printMessage(Level.error);
   }
-  /** Log a warning */
+  // Log a warning
   warn(str?: string) {
     if (typeof str !== 'undefined') this.txt(str);
     return this.printMessage(Level.warn);
   }
-  /** Print some general information */
+  // Print some general information
   log(str?: string) {
     if (typeof str !== 'undefined') this.txt(str);
     return this.printMessage(Level.log);
   }
-  /** Print something for debugging purposes only */
+  // Print something for debugging purposes only
   debug(str?: string) {
     if (typeof str !== 'undefined') this.txt(str);
     return this.printMessage(Level.debug);
@@ -148,16 +153,16 @@ export class Logger {
    */
   private setupStyles() {
     // Loop over each style name (i.e. "red")
-    for (let c in COLOR_STYLES) {
+    for (let c in logStyles) {
       // Make sure the property is on the instance, not the prototype
-      if (COLOR_STYLES.hasOwnProperty(c)) {
+      if (logStyles.hasOwnProperty(c)) {
         // Define a new property on this, of name c (i.e. "red")
         //  that is getter-based (instead of value based)
         const self = this;
         Object.defineProperty(this, c, {
           get() {
-            const cStyle = COLOR_STYLES[c as keyof typeof COLOR_STYLES]; // i.e. ('color: red;')
-            self.stylesInProgress.push(cStyle);
+            const styleCss = logStyles[c as keyof typeof logStyles]; // i.e. ('color: red;')
+            self.stylesInProgress.push(styleCss);
             return this;
           }
         });
@@ -176,14 +181,32 @@ export class Logger {
       let logFunction = this.printer[functionName];
       let allMsgs = '';
       let allStyles: string[] = [];
+
+      /** Flush all prefix and styles into msgsAndStyles
+       * Note: there may not be styles associated with a message or prefix!
+       */
       for (let [msg, style] of this.prefixesAndStyles) {
-        allMsgs += `%c[${msg}]`;
-        allStyles.push(style);
+        // prefix styles
+        if (style) {
+          allMsgs += `%c[${msg}]`;
+          allStyles.push(style); // Only add style to allStyles if present
+        } else {
+          allMsgs += `[${msg}]`;
+        }
       }
-      if (allMsgs.length > 0) allMsgs += ' ';
+      // white space style
+      if (allMsgs.length > 0) {
+        allMsgs += '%c '; // space between prefixes and rest of logged message
+        allStyles.push(WHITE_SPACE_STYLE);
+      }
       for (let [msg, style] of this.msgsAndStyles) {
-        allMsgs += `%c${msg}`;
-        allStyles.push(style);
+        // message styles
+        if (style) {
+          allMsgs += `%c${msg}`;
+          allStyles.push(style); // only add style to allStyles if present
+        } else {
+          allMsgs += `${msg}`;
+        }
       }
       logFunction(allMsgs, ...allStyles);
       this.msgsAndStyles = [];
