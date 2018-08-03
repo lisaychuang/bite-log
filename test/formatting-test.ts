@@ -63,7 +63,7 @@ QUnit.test('Prefixes are styled correctly', assert => {
   // Make sure Prefix is styled %c[prefix]%c
   assert.deepEqual(
     printer.messages.error[0][0],
-    '[prefix]%c %cPrefix this error' // console.log('%c[]......')
+    '[prefix]%c Prefix this error' // console.log('%c[]......')
   );
   assert.ok(
     printer.messages.error[0].indexOf(
@@ -72,4 +72,19 @@ QUnit.test('Prefixes are styled correctly', assert => {
     ) >= 0,
     'I found the style for a "blank space" somewhere'
   );
+});
+
+// logger.debug('hello')  --> console.log('hello')
+QUnit.test('No styles are applied', assert => {
+  const printer = makeTestPrinter();
+  const logger = new Logger(Level.debug, printer);
+  logger.log('I have no prefix or colors');
+
+  // No prefix or colors
+  assert.deepEqual(printer.messages, {
+    log: [['I have no prefix or colors']],
+    warn: [],
+    error: [],
+    debug: []
+  });
 });
