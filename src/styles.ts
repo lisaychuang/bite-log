@@ -10,11 +10,15 @@ for (let c of X11_COLORS) {
   COLOR_STYLES[`bg${c[0].toUpperCase()}${c.substring(1)}`] = `background-color: ${c};`;
 }
 
-// const fontStyles: StyleObj = {
-//   bold: 'font-weight: 500;'
-// };
+const FONT_STYLES: StyleObj = {
+  bold: 'font-weight: bold;',
+  italic: 'font-style: italic;',
+  overline: 'text-decoration: overline;',
+  underline: 'text-decoration: underline;',
+  strikethrough: 'text-decoration: line-through;',
+};
 
 export default {
-  ...COLOR_STYLES // ,
-  // ...fontStyles
+  ...COLOR_STYLES,
+  ...FONT_STYLES
 };

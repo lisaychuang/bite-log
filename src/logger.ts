@@ -1,4 +1,4 @@
-import { BgColors, TextColors } from './style-types';
+import { BgColors, FontStyles, TextColors } from './style-types';
 import COLOR_STYLES from './styles';
 
 // Log levels (lower number are more severe)
@@ -192,7 +192,7 @@ class Logger {
 }
 
 export type LoggerWithStyles = Logger & {
-  [K in keyof (TextColors & BgColors)]: LoggerWithStyles;
+  [K in keyof (TextColors & BgColors & FontStyles )]: LoggerWithStyles;
 };
 
 export interface LoggerConstructor {

@@ -284,3 +284,11 @@ export interface BgColors {
   bgYellow: string;
   bgYellowGreen: string;
 }
+
+export interface FontStyles {
+  bold: string;
+  italic: string;
+  overline: string;
+  underline: string;
+  strikethrough: string;
+}
