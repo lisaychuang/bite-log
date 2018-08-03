@@ -27,6 +27,7 @@ export interface Printer {
   warn: typeof console.warn;
   log: typeof console.log;
   debug: typeof console.debug;
+  dir: typeof console.dir;
 }
 
 /**
@@ -44,6 +45,9 @@ class Logger {
 
   // An array of prefixes that go at the beginning of each message
   private prefixesAndStyles: Array<[string, string]> = [];
+
+  // An array of any message that is not a string
+  private nonStringsToLog: Array<[any]> = [];
 
   // An array of message & their associated styles
   private msgsAndStyles: Array<[string, string]> = [];
@@ -112,30 +116,43 @@ class Logger {
   }
 
   /** Stage a string and accumulated styles for later console functions */
-  txt(str: string) {
-    this.msgsAndStyles.push([str, this.stylesInProgress.join('')]);
+  txt(...args: any[]) {
+    // EXAMPLE: ['my list is', [12, 22, 14], '<< it is great'
+    let fullString = '';
+    let fullStringStyles = this.stylesInProgress.join(''); // for example 'color: red; background-color: yellow;'
     this.stylesInProgress = [];
+    for (let arg of args) {
+      if (typeof arg === 'string') {
+        fullString += arg;
+      } else {
+        this.nonStringsToLog.push(arg);
+      }
+      // in the case where there are some string arguments
+    }
+    if (fullString) {
+      this.msgsAndStyles.push([fullString, fullStringStyles]);
+    }
     return this;
   }
 
   // Log an error message
-  error(str?: string) {
-    if (typeof str !== 'undefined') this.txt(str);
+  error(...args: any[]) {
+    this.txt(...args);
     return this.printMessage(Level.error);
   }
   // Log a warning
-  warn(str?: string) {
-    if (typeof str !== 'undefined') this.txt(str);
+  warn(...args: any[]) {
+    this.txt(...args);
     return this.printMessage(Level.warn);
   }
   // Print some general information
-  log(str?: string) {
-    if (typeof str !== 'undefined') this.txt(str);
+  log(...args: any[]) {
+    this.txt(...args);
     return this.printMessage(Level.log);
   }
   // Print something for debugging purposes only
-  debug(str?: string) {
-    if (typeof str !== 'undefined') this.txt(str);
+  debug(...args: any[]) {
+    this.txt(...args);
     return this.printMessage(Level.debug);
   }
 
@@ -185,8 +202,9 @@ class Logger {
       /** Flush all prefix and styles into msgsAndStyles
        * Note: there may not be styles associated with a message or prefix!
        */
+
+      // prefix styles
       for (let [msg, style] of this.prefixesAndStyles) {
-        // prefix styles
         if (style) {
           allMsgs += `%c[${msg}]`;
           allStyles.push(style); // Only add style to allStyles if present
@@ -199,8 +217,8 @@ class Logger {
         allMsgs += '%c '; // space between prefixes and rest of logged message
         allStyles.push(WHITE_SPACE_STYLE);
       }
+      // message styles
       for (let [msg, style] of this.msgsAndStyles) {
-        // message styles
         if (style) {
           allMsgs += `%c${msg}`;
           allStyles.push(style); // only add style to allStyles if present
@@ -211,6 +229,13 @@ class Logger {
       logFunction(allMsgs, ...allStyles);
       this.msgsAndStyles = [];
     }
+    // in printMessage, we need to deal with that array (i.e., printer.dir([1, 2, 3])  )
+    // and set the array of non-strings back to empty
+    // log.debug([1, 2, 3]);
+    for (let nonString of this.nonStringsToLog) {
+      this.printer.dir(nonString);
+    }
+    this.nonStringsToLog = [];
   }
 }
 
