@@ -1,5 +1,5 @@
 import { BgColors, FontSizes, FontStyles, TextColors } from './style-types';
-import COLOR_STYLES from './styles';
+import logStyles, { CLEAR_STYLE } from './styles';
 
 // Log levels (lower number are more severe)
 export const enum Level {
@@ -27,6 +27,7 @@ export interface Printer {
   warn: typeof console.warn;
   log: typeof console.log;
   debug: typeof console.debug;
+  dir: typeof console.dir;
 }
 
 /**
@@ -44,6 +45,9 @@ export class Logger {
 
   // An array of prefixes that go at the beginning of each message
   private prefixesAndStyles: Array<[string, string]> = [];
+
+  // An array of any message that is not a string
+  private nonStringsToLog: Array<[any]> = [];
 
   // An array of message & their associated styles
   private msgsAndStyles: Array<[string, string]> = [];
@@ -101,41 +105,59 @@ export class Logger {
     return this;
   }
 
+  /**
+   * Add custom CSS styles
+   * @param style
+   * a string of CSS, similar to what you'd use for <div style="">
+   */
   css(style: string) {
     this.stylesInProgress.push(style);
     return this;
   }
 
   /** Stage a string and accumulated styles for later console functions */
-  txt(str: string) {
-    this.msgsAndStyles.push([str, this.stylesInProgress.join('')]);
+  txt(...args: any[]) {
+    // EXAMPLE: ['my list is', [12, 22, 14], '<< it is great'
+    let fullString = '';
+    let fullStringStyles = this.stylesInProgress.join(''); // for example 'color: red; background-color: yellow;'
     this.stylesInProgress = [];
+    for (let arg of args) {
+      if (typeof arg === 'string') {
+        fullString += arg;
+      } else {
+        this.nonStringsToLog.push(arg);
+      }
+      // in the case where there are some string arguments
+    }
+    if (fullString) {
+      this.msgsAndStyles.push([fullString, fullStringStyles]);
+    }
     return this;
   }
 
-  /** Log an error message */
-  error(str?: string) {
-    if (typeof str !== 'undefined') this.txt(str);
+  // Log an error message
+  error(...args: any[]) {
+    this.txt(...args);
     return this.printMessage(Level.error);
   }
-  /** Log a warning */
-  warn(str?: string) {
-    if (typeof str !== 'undefined') this.txt(str);
+  // Log a warning
+  warn(...args: any[]) {
+    this.txt(...args);
     return this.printMessage(Level.warn);
   }
-  /** Print some general information */
-  log(str?: string) {
-    if (typeof str !== 'undefined') this.txt(str);
+  // Print some general information
+  log(...args: any[]) {
+    this.txt(...args);
     return this.printMessage(Level.log);
   }
-  /** Print something for debugging purposes only */
-  debug(str?: string) {
-    if (typeof str !== 'undefined') this.txt(str);
+  // Print something for debugging purposes only
+  debug(...args: any[]) {
+    this.txt(...args);
     return this.printMessage(Level.debug);
   }
 
   /**
-   * According to the COLOR_STYLES in './style.ts', set up
+   * According to the logStyles in './style.ts', set up
    * a property for each, kind of like
    * ```ts
    *   {
@@ -148,16 +170,16 @@ export class Logger {
    */
   private setupStyles() {
     // Loop over each style name (i.e. "red")
-    for (let c in COLOR_STYLES) {
+    for (let c in logStyles) {
       // Make sure the property is on the instance, not the prototype
-      if (COLOR_STYLES.hasOwnProperty(c)) {
+      if (logStyles.hasOwnProperty(c)) {
         // Define a new property on this, of name c (i.e. "red")
         //  that is getter-based (instead of value based)
         const self = this;
         Object.defineProperty(this, c, {
           get() {
-            const cStyle = COLOR_STYLES[c as keyof typeof COLOR_STYLES]; // i.e. ('color: red;')
-            self.stylesInProgress.push(cStyle);
+            const styleCss = logStyles[c as keyof typeof logStyles]; // i.e. ('color: red;')
+            self.stylesInProgress.push(styleCss);
             return this;
           }
         });
@@ -176,18 +198,53 @@ export class Logger {
       let logFunction = this.printer[functionName];
       let allMsgs = '';
       let allStyles: string[] = [];
+
+      /** Flush all prefix and styles into msgsAndStyles
+       * Note: there may not be styles associated with a message or prefix!
+       */
+
+      // prefix styles
       for (let [msg, style] of this.prefixesAndStyles) {
-        allMsgs += `%c[${msg}]`;
-        allStyles.push(style);
+        if (style) {
+          // with styles
+          allMsgs += `%c[${msg}]`;
+          allStyles.push(style); // Only add style to allStyles if present
+        } else if (allStyles.length > 0) {
+          // unstyled, but following something styled
+          allMsgs += `%c[${msg}]`;
+          allStyles.push(CLEAR_STYLE); // Only add style to allStyles if present
+        } else {
+          // unstyled, following nothing (or other unstyled stuff)
+          allMsgs += `[${msg}]`;
+        }
       }
-      if (allMsgs.length > 0) allMsgs += ' ';
+      // white space style
+      if (allMsgs.length > 0) {
+        allMsgs += '%c '; // space between prefixes and rest of logged message
+        allStyles.push(CLEAR_STYLE);
+      }
+      // message styles
       for (let [msg, style] of this.msgsAndStyles) {
-        allMsgs += `%c${msg}`;
-        allStyles.push(style);
+        if (style) {
+          allMsgs += `%c${msg}`;
+          allStyles.push(style); // only add style to allStyles if present
+        } else if (allStyles.length > 0) {
+          allMsgs += `%c${msg}`;
+          allStyles.push(CLEAR_STYLE); // only add style to allStyles if present
+        } else {
+          allMsgs += `${msg}`;
+        }
       }
       logFunction(allMsgs, ...allStyles);
       this.msgsAndStyles = [];
     }
+    // in printMessage, we need to deal with that array (i.e., printer.dir([1, 2, 3])  )
+    // and set the array of non-strings back to empty
+    // log.debug([1, 2, 3]);
+    for (let nonString of this.nonStringsToLog) {
+      this.printer.dir(nonString);
+    }
+    this.nonStringsToLog = [];
   }
 }
 
