@@ -33,7 +33,7 @@ export interface Printer {
 /**
  * A class which allows for colorful, tagged logging
  */
-class Logger {
+export class Logger {
   // The log level threshold, below which no messages are printed
   private level: number;
 
