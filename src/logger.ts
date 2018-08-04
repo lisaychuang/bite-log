@@ -1,5 +1,5 @@
 import { BgColors, FontSizes, FontStyles, TextColors } from './style-types';
-import logStyles, { WHITE_SPACE_STYLE } from './styles';
+import logStyles, { CLEAR_STYLE } from './styles';
 
 // Log levels (lower number are more severe)
 export const enum Level {
@@ -157,7 +157,7 @@ export class Logger {
   }
 
   /**
-   * According to the COLOR_STYLES in './style.ts', set up
+   * According to the logStyles in './style.ts', set up
    * a property for each, kind of like
    * ```ts
    *   {
@@ -206,22 +206,31 @@ export class Logger {
       // prefix styles
       for (let [msg, style] of this.prefixesAndStyles) {
         if (style) {
+          // with styles
           allMsgs += `%c[${msg}]`;
           allStyles.push(style); // Only add style to allStyles if present
+        } else if (allStyles.length > 0) {
+          // unstyled, but following something styled
+          allMsgs += `%c[${msg}]`;
+          allStyles.push(CLEAR_STYLE); // Only add style to allStyles if present
         } else {
+          // unstyled, following nothing (or other unstyled stuff)
           allMsgs += `[${msg}]`;
         }
       }
       // white space style
       if (allMsgs.length > 0) {
         allMsgs += '%c '; // space between prefixes and rest of logged message
-        allStyles.push(WHITE_SPACE_STYLE);
+        allStyles.push(CLEAR_STYLE);
       }
       // message styles
       for (let [msg, style] of this.msgsAndStyles) {
         if (style) {
           allMsgs += `%c${msg}`;
           allStyles.push(style); // only add style to allStyles if present
+        } else if (allStyles.length > 0) {
+          allMsgs += `%c${msg}`;
+          allStyles.push(CLEAR_STYLE); // only add style to allStyles if present
         } else {
           allMsgs += `${msg}`;
         }
