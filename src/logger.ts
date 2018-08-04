@@ -1,5 +1,5 @@
 import { BgColors, FontSizes, FontStyles, TextColors } from './style-types';
-import COLOR_STYLES from './styles';
+import logStyles, { CLEAR_STYLE } from './styles';
 
 // Log levels (lower number are more severe)
 export const enum Level {
@@ -135,7 +135,7 @@ class Logger {
   }
 
   /**
-   * According to the COLOR_STYLES in './style.ts', set up
+   * According to the logStyles in './style.ts', set up
    * a property for each, kind of like
    * ```ts
    *   {
@@ -148,15 +148,15 @@ class Logger {
    */
   private setupStyles() {
     // Loop over each style name (i.e. "red")
-    for (let c in COLOR_STYLES) {
+    for (let c in logStyles) {
       // Make sure the property is on the instance, not the prototype
-      if (COLOR_STYLES.hasOwnProperty(c)) {
+      if (logStyles.hasOwnProperty(c)) {
         // Define a new property on this, of name c (i.e. "red")
         //  that is getter-based (instead of value based)
         const self = this;
         Object.defineProperty(this, c, {
           get() {
-            const cStyle = COLOR_STYLES[c as keyof typeof COLOR_STYLES]; // i.e. ('color: red;')
+            const cStyle = logStyles[c as keyof typeof logStyles]; // i.e. ('color: red;')
             self.stylesInProgress.push(cStyle);
             return this;
           }
@@ -177,13 +177,35 @@ class Logger {
       let allMsgs = '';
       let allStyles: string[] = [];
       for (let [msg, style] of this.prefixesAndStyles) {
-        allMsgs += `%c[${msg}]`;
-        allStyles.push(style);
+        if (style) {
+          // with styles
+          allMsgs += `%c[${msg}]`;
+          allStyles.push(style); // Only add style to allStyles if present
+        } else if (allStyles.length > 0) {
+          // unstyled, but following something styled
+          allMsgs += `%c[${msg}]`;
+          allStyles.push(CLEAR_STYLE); // Only add style to allStyles if present
+        } else {
+          // unstyled, following nothing (or other unstyled stuff)
+          allMsgs += `[${msg}]`;
+        }
       }
-      if (allMsgs.length > 0) allMsgs += ' ';
+      // white space style
+      if (allMsgs.length > 0) {
+        allMsgs += '%c '; // space between prefixes and rest of logged message
+        allStyles.push(CLEAR_STYLE);
+      }
+      // message styles
       for (let [msg, style] of this.msgsAndStyles) {
-        allMsgs += `%c${msg}`;
-        allStyles.push(style);
+        if (style) {
+          allMsgs += `%c${msg}`;
+          allStyles.push(style); // only add style to allStyles if present
+        } else if (allStyles.length > 0) {
+          allMsgs += `%c${msg}`;
+          allStyles.push(CLEAR_STYLE); // only add style to allStyles if present
+        } else {
+          allMsgs += `${msg}`;
+        }
       }
       logFunction(allMsgs, ...allStyles);
       this.msgsAndStyles = [];

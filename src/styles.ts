@@ -27,6 +27,8 @@ const FONT_SIZES: StyleObj = {
   huge: 'font-size: 2em;'
 };
 
+export const CLEAR_STYLE = 'color: inherit; background-color: transparent;';
+
 export default {
   ...COLOR_STYLES,
   ...FONT_STYLES,

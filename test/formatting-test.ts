@@ -53,3 +53,69 @@ QUnit.test('Logging with multiple styles per message', assert => {
     ['%cHouston, we have a problem', 'font-size: 1.5em;']
   ]);
 });
+
+QUnit.test('Prefixes are styled correctly', assert => {
+  const printer = makeTestPrinter();
+  const logger = new Logger(Level.warn, printer);
+  logger.pushPrefix('prefix');
+  logger.error('Prefix this error');
+
+  // Make sure Prefix is styled %c[prefix]%c
+  assert.deepEqual(
+    printer.messages.error[0][0],
+    '[prefix]%c %cPrefix this error' // console.log('%c[]......')
+  );
+  assert.ok(
+    printer.messages.error[0].indexOf(
+      // search ALL arguments that might have been passed to console.log
+      'color: inherit; background-color: transparent;'
+    ) >= 0,
+    'I found the style for a "blank space" somewhere'
+  );
+});
+
+QUnit.test(
+  'Unsyled stuff following styled stuff gets "clear" styles',
+  assert => {
+    const printer = makeTestPrinter();
+    const logger = new Logger(Level.debug, printer);
+    logger.bgAliceBlue.pushPrefix('AAA').pushPrefix('bbb');
+    logger.red.txt('should be red').log('should be "clear');
+
+    assert.ok(
+      printer.messages.log[0].indexOf(
+        // search ALL arguments that might have been passed to console.log
+        'color: inherit; background-color: transparent;'
+      ) >= 0,
+      'I found the style for a "blank space" somewhere'
+    );
+    assert.deepEqual(
+      printer.messages.log[0],
+
+      [
+        '%c[AAA]%c[bbb]%c %cshould be red%cshould be "clear',
+        'background-color: aliceBlue;',
+        'color: inherit; background-color: transparent;',
+        'color: inherit; background-color: transparent;',
+        'color: red;',
+        'color: inherit; background-color: transparent;'
+      ],
+      'first log message is correct'
+    );
+  }
+);
+
+// logger.debug('hello')  --> console.log('hello')
+QUnit.test('No styles are applied', assert => {
+  const printer = makeTestPrinter();
+  const logger = new Logger(Level.debug, printer);
+  logger.log('I have no prefix or colors');
+
+  // No prefix or colors
+  assert.deepEqual(printer.messages, {
+    log: [['I have no prefix or colors']],
+    warn: [],
+    error: [],
+    debug: []
+  });
+});
