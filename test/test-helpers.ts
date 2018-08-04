@@ -79,4 +79,11 @@ export function logCountAssert(
       `${message}: ${l} log(s) were logged`
     );
   }
+  if (typeof dir !== 'undefined') {
+    assert.equal(
+      (printer as any).messages.dir.length,
+      dir,
+      `${message}: ${dir} dir(s) were logged`
+    );
+  }
 }
