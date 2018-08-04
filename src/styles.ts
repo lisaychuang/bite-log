@@ -29,8 +29,10 @@ const FONT_SIZES: StyleObj = {
 
 export const CLEAR_STYLE = 'color: inherit; background-color: transparent;';
 
-export default {
+const stylesToPutOnLogger = {
   ...COLOR_STYLES,
   ...FONT_STYLES,
   ...FONT_SIZES
 };
+
+export default stylesToPutOnLogger;
