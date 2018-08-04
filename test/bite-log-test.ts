@@ -1,32 +1,40 @@
-import Logger, { Level } from 'bite-log';
+import * as BL from 'bite-log';
+// tslint:disable-next-line:no-duplicate-imports
+import { LoggerWithStyles } from 'bite-log';
 
-QUnit.module('bite-log tests');
+QUnit.module('Public API is correct');
 
-QUnit.test('Logger', assert => {
-  const logger = new Logger(Level.warn); // only warns and error
-  // console.log('%c Oh my heavens! ', 'background: #222; color: #bada55');
-  logger.debug(' (debug) Oh my heavens');
-  logger.log(' (log) Oh my heavens');
-  logger.warn(' (warn) Oh my heavens');
-  logger.error(' (error) Oh my heavens');
-  assert.ok(logger, 'logger exists');
+QUnit.test('Logger as a default export', assert => {
+  assert.equal(typeof BL.default, 'function', 'it\'s a function');
+  assert.deepEqual(
+    Object.keys(BL),
+    ['default'],
+    'aside from types, there is a "default" export'
+  );
+  assert.deepEqual(
+    typeof BL.default.prototype,
+    'object',
+    'Logger looks like a class'
+  );
+  assert.ok(new BL.default(), 'Logger can be used with the `new` keyword');
 });
 
+QUnit.test('Level as a named export', assert => {
+  assert.equal(BL.Level.error, 1, 'Level.error = 1');
+  assert.equal(BL.Level.warn, 2, 'Level.error = 2');
+  assert.equal(BL.Level.log, 3, 'Level.error = 3');
+  assert.equal(BL.Level.debug, 4, 'Level.error = 4');
+});
 
-// logger
+/**
+ * The following are just TS interface/type tests. Their failures may be caught
+ * by running `npm run-script problems`
+ */
 
-// logger
-//   .bgWhite.red.txt('my message')
-//   .blue.large.txt('another');
-//   .debug();
-
-// logger
-//   .bgWhite.red.txt('my message')
-//   .blue.large.debug('another');
-
-
-// msgsAndStyles
-// [
-//   ['hello', 'color: red'],
-//   ['Im yellow', 'background: yellow']
-// ]
+const x: LoggerWithStyles = new BL.default(4);
+// tslint:disable-next-line:no-unused-expression
+x.red;
+// tslint:disable-next-line:no-unused-expression
+x.bgBeige;
+// tslint:disable-next-line:no-unused-expression
+x.bold;

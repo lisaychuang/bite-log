@@ -1,16 +1,16 @@
-import Logger, { Level } from 'bite-log';
-import { logCountAssert, makeTestPrinter } from './test-helpers';
+import { Level } from 'bite-log';
+import { makeTestLogger } from './test-helpers';
 
 QUnit.module('Objects, arrays, functions, etc... should be loggable');
 
 QUnit.test('I can log an object after my string message', assert => {
-  const printer = makeTestPrinter();
-  const logger = new Logger(Level.debug, printer); // only warns and error
+  const { logger, printer } = makeTestLogger(Level.debug);
 
   logger.log('Here are some numbers. They are increasing', [1, 2, 3, 4]);
-  logCountAssert(
-    { message: 'after a debug', assert, printer },
-    { l: 1 } // one log message has been printed
+  assert.logCount(
+    printer,
+    { l: 1 }, // one log message has been printed
+    'after a debug'
   );
 
   assert.deepEqual(
@@ -27,13 +27,13 @@ QUnit.test('I can log an object after my string message', assert => {
 });
 
 QUnit.test('Formatting is applied to the string', assert => {
-  const printer = makeTestPrinter();
-  const logger = new Logger(Level.debug, printer); // only warns and error
+  const { printer, logger } = makeTestLogger(Level.debug);
 
   logger.red.log('Here are some numbers. They are increasing', [1, 2, 3, 4]);
-  logCountAssert(
-    { message: 'after a debug', assert, printer },
-    { l: 1 } // one log message has been printed
+  assert.logCount(
+    printer,
+    { l: 1 }, // one log message has been printed
+    'after a debug'
   );
 
   assert.deepEqual(
@@ -52,17 +52,18 @@ QUnit.test('Formatting is applied to the string', assert => {
 QUnit.test(
   'Formatting is applied to all strings passed to the logger',
   assert => {
-    const printer = makeTestPrinter();
-    const logger = new Logger(Level.debug, printer); // only warns and error
+    const { logger, printer } = makeTestLogger(Level.debug);
 
     logger.red.log(
       'Here are some numbers ',
       [1, 2, 3, 4],
       'They are increasing'
     );
-    logCountAssert(
-      { message: 'after a debug', assert, printer },
-      { l: 1 } // one log message has been printed
+
+    assert.logCount(
+      printer,
+      { l: 1 }, // one log message has been printed
+      'after a debug'
     );
 
     // logger.red.txt('Here are some numbers. They are increasing')
