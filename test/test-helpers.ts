@@ -45,6 +45,10 @@ function makeTestPrinter(): Printer & { messages: any } {
   return printer;
 }
 
+/**
+ * Add type information to QUnit.assert, so that (in this library only)
+ * developers can use `assert.logCount(...)` with TypeScript
+ */
 declare global {
   interface Assert {
     logCount(

@@ -33,7 +33,7 @@ QUnit.test('Formatting is applied to the string', assert => {
   assert.logCount(
     printer,
     { l: 1 }, // one log message has been printed
-    'after a debug'
+    'after a log'
   );
 
   assert.deepEqual(
@@ -63,7 +63,7 @@ QUnit.test(
     assert.logCount(
       printer,
       { l: 1 }, // one log message has been printed
-      'after a debug'
+      'after a log'
     );
 
     // logger.red.txt('Here are some numbers. They are increasing')
