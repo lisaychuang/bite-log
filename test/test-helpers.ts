@@ -1,6 +1,14 @@
-import { Printer } from 'bite-log';
+import Logger, { Level, LoggerWithStyles, Printer } from 'bite-log';
 
-export function makeTestPrinter(): Printer & { messages: any } {
+export function makeTestLogger(
+  level: Level
+): { logger: LoggerWithStyles; printer: Printer & { messages: any } } {
+  let printer = makeTestPrinter();
+  let logger = new Logger(level, printer);
+  return { printer, logger };
+}
+
+function makeTestPrinter(): Printer & { messages: any } {
   const printer = {
     messages: {
       log: [] as any[][],
@@ -37,53 +45,70 @@ export function makeTestPrinter(): Printer & { messages: any } {
   return printer;
 }
 
-export function logCountAssert(
-  {
-    message,
-    assert,
-    printer
-  }: { message: string; assert: Assert; printer: Printer },
+/**
+ * Add type information to QUnit.assert, so that (in this library only)
+ * developers can use `assert.logCount(...)` with TypeScript
+ */
+declare global {
+  interface Assert {
+    logCount(
+      printer: Printer,
+      counts: { e?: number; w?: number; l?: number; d?: number; dir?: number },
+      message?: string
+    ): void;
+  }
+}
+
+QUnit.assert.logCount = function(
+  printer: Printer,
   {
     e,
     w,
     l,
     d,
     dir
-  }: { e?: number; w?: number; l?: number; d?: number; dir?: number }
+  }: { e?: number; w?: number; l?: number; d?: number; dir?: number },
+  message?: string
 ) {
+  const actual: {
+    errors?: number;
+    logs?: number;
+    debugs?: number;
+    warns?: number;
+    dirs?: number;
+  } = {};
+  const expected: {
+    errors?: number;
+    logs?: number;
+    debugs?: number;
+    warns?: number;
+    dirs?: number;
+  } = {};
   if (typeof e !== 'undefined') {
-    assert.equal(
-      (printer as any).messages.error.length,
-      e,
-      `${message}: ${e} error(s) were logged`
-    );
+    expected.errors = e;
+    actual.errors = (printer as any).messages.error.length;
   }
   if (typeof w !== 'undefined') {
-    assert.equal(
-      (printer as any).messages.warn.length,
-      w,
-      `${message}: ${w} warning(s) was logged`
-    );
-  }
-  if (typeof d !== 'undefined') {
-    assert.equal(
-      (printer as any).messages.debug.length,
-      d,
-      `${message}: ${d} debug(s) were logged`
-    );
+    expected.warns = w;
+    actual.warns = (printer as any).messages.warn.length;
   }
   if (typeof l !== 'undefined') {
-    assert.equal(
-      (printer as any).messages.log.length,
-      l,
-      `${message}: ${l} log(s) were logged`
-    );
+    expected.logs = l;
+    actual.logs = (printer as any).messages.log.length;
+  }
+  if (typeof d !== 'undefined') {
+    expected.debugs = d;
+    actual.debugs = (printer as any).messages.debug.length;
   }
   if (typeof dir !== 'undefined') {
-    assert.equal(
-      (printer as any).messages.dir.length,
-      dir,
-      `${message}: ${dir} dir(s) were logged`
-    );
+    expected.dirs = dir;
+    actual.dirs = (printer as any).messages.dir.length;
   }
-}
+
+  this.pushResult({
+    result: JSON.stringify(actual) === JSON.stringify(expected),
+    actual,
+    expected,
+    message: message || 'message counts match'
+  });
+};
