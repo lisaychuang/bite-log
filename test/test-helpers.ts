@@ -1,10 +1,11 @@
 import Logger, { Level, LoggerWithStyles, Printer } from 'bite-log';
 
 export function makeTestLogger(
-  level: Level
+  level: Level,
+  env: 'browser' | 'node' = 'browser'
 ): { logger: LoggerWithStyles; printer: Printer & { messages: any } } {
   let printer = makeTestPrinter();
-  let logger = new Logger(level, printer);
+  let logger = new Logger(level, { printer, env });
   return { printer, logger };
 }
 

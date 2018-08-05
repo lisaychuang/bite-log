@@ -1,5 +1,6 @@
 import { BgColors, FontSizes, FontStyles, TextColors } from './style-types';
 import logStyles, { CLEAR_STYLE } from './styles';
+import { isBrowser } from './utils';
 
 // Log levels (lower number are more severe)
 export const enum Level {
@@ -18,6 +19,29 @@ const CONSOLE_FUNCTIONS: { [k: number]: keyof Printer } = {
 };
 
 /**
+ * A CustomStyle is a style that doesn't correspond to a X11 color.
+ * This could be custom CSS in the browser, or custom ANSI codes in Node
+ */
+interface CustomStyle {
+  /**
+   * Data for the custom color (i.e., the CSS string)
+   */
+  custom: string;
+}
+/**
+ * A list of styles that usually accompany a list of message parts.
+ * A `StyleParts` usually accompanies a token within a message
+ *
+ * @example
+ * ```ts
+ * logger.red.bgYellow.underline.debug('Hello World');
+ * ```
+ *
+ * The `StyleParts` might look like ['red', 'bgYellow', 'underline']
+ */
+type StyleParts = Array<string | CustomStyle>;
+
+/**
  * Something that looks like console.*. I suspect
  * that it might be useful to use a non-console thing
  * in tests.
@@ -30,6 +54,30 @@ export interface Printer {
   dir: typeof console.dir;
 }
 
+function makeStyleString(styleParts: StyleParts): string {
+  const parts: string[] = [];
+  for (let s of styleParts) {
+    if (typeof s === 'string') {
+      parts.push(logStyles[s]);
+    } else {
+      parts.push(s.custom);
+    }
+  }
+  return parts.join('');
+}
+
+// tslint:disable-next-line:no-namespace
+export namespace Logger {
+  export interface Config {
+    printer: Printer;
+    env?: 'browser' | 'node';
+  }
+}
+
+const DEFAULT_CONFIG: Logger.Config = {
+  printer: console
+};
+
 /**
  * A class which allows for colorful, tagged logging
  */
@@ -41,25 +89,38 @@ export class Logger {
   private printer: Printer;
 
   // An array of current styles
-  private stylesInProgress: string[] = [];
+  private stylesInProgress: StyleParts = [];
 
   // An array of prefixes that go at the beginning of each message
-  private prefixesAndStyles: Array<[string, string]> = [];
+  private prefixesAndStyles: Array<[string, StyleParts]> = [];
 
   // An array of any message that is not a string
   private nonStringsToLog: Array<[any]> = [];
 
   // An array of message & their associated styles
-  private msgsAndStyles: Array<[string, string]> = [];
+  private msgsAndStyles: Array<[string, StyleParts]> = [];
 
+  private env: 'browser' | 'node';
   /**
    * Create a new instance of Logger
    * @param level the log level (1=error, 2=warn, etc...)
    * @param printer the object that actually prints messages (looks like console.*),
    */
-  constructor(level: number = 2, printer: Printer = console) {
+  constructor(
+    level: number = 2,
+    printerOrConfig: Printer | Logger.Config = DEFAULT_CONFIG
+  ) {
     this.level = level;
-    this.printer = printer;
+    if (typeof (printerOrConfig as any).printer === 'undefined') {
+      // printerOrConfig is a Printer
+      this.printer = printerOrConfig as Printer;
+      this.env = isBrowser() ? 'browser' : 'node';
+    } else {
+      // printerOrConfig is a Logger.Config
+      const config: Logger.Config = printerOrConfig as Logger.Config;
+      this.printer = config.printer;
+      this.env = config.env || isBrowser() ? 'browser' : 'node';
+    }
     this.setupStyles();
   }
 
@@ -90,7 +151,11 @@ export class Logger {
    * @param name the name of the tag
    */
   pushPrefix(name: string) {
-    this.prefixesAndStyles.push([name, this.stylesInProgress.join('')]);
+    /**
+     * stylesInProgress is a StyleParts i.e., ['red', 'blue', { custom: 'font-weight: 900;'}]
+     * Here we create a shallow clone of the array, and push it into prefixesAndStyles to be dealt with later
+     */
+    this.prefixesAndStyles.push([name, [...this.stylesInProgress]]);
     this.stylesInProgress = [];
     return this;
   }
@@ -111,7 +176,7 @@ export class Logger {
    * a string of CSS, similar to what you'd use for <div style="">
    */
   css(style: string) {
-    this.stylesInProgress.push(style);
+    this.stylesInProgress.push({ custom: style });
     return this;
   }
 
@@ -119,7 +184,11 @@ export class Logger {
   txt(...args: any[]) {
     // EXAMPLE: ['my list is', [12, 22, 14], '<< it is great'
     let fullString = '';
-    let fullStringStyles = this.stylesInProgress.join(''); // for example 'color: red; background-color: yellow;'
+    /**
+     * stylesInProgress is a StyleParts i.e., ['red', 'blue', { custom: 'font-weight: 900;'}]
+     * Here we create a shallow clone of the array
+     */
+    let fullStringStyles = [...this.stylesInProgress]; // for example 'color: red; background-color: yellow;'
     this.stylesInProgress = [];
     for (let arg of args) {
       if (typeof arg === 'string') {
@@ -130,6 +199,10 @@ export class Logger {
       // in the case where there are some string arguments
     }
     if (fullString) {
+      /**
+       * Only if there's text to print, store the message and associated styles so they can be dealt with later
+       * We skip this in cases where ONLY non-strings (i.e., an array) are being logged
+       */
       this.msgsAndStyles.push([fullString, fullStringStyles]);
     }
     return this;
@@ -170,16 +243,19 @@ export class Logger {
    */
   private setupStyles() {
     // Loop over each style name (i.e. "red")
-    for (let c in logStyles) {
+    for (let styleName in logStyles) {
       // Make sure the property is on the instance, not the prototype
-      if (logStyles.hasOwnProperty(c)) {
+      if (logStyles.hasOwnProperty(styleName)) {
         // Define a new property on this, of name c (i.e. "red")
         //  that is getter-based (instead of value based)
         const self = this;
-        Object.defineProperty(this, c, {
+        Object.defineProperty(this, styleName, {
           get() {
-            const styleCss = logStyles[c as keyof typeof logStyles]; // i.e. ('color: red;')
-            self.stylesInProgress.push(styleCss);
+            /**
+             * Store the styleName, to be dealt with the next time
+             * a `.txt()`, `.log()`, `.debug()`, `.error()` or `.warn()` call is made
+             */
+            self.stylesInProgress.push(styleName);
             return this;
           }
         });
@@ -193,6 +269,17 @@ export class Logger {
    * @param msg the message text
    */
   private printMessage(level: number) {
+    if (this.env === 'browser') {
+      return this.printBrowserMessage(level);
+    }
+    throw new Error(
+      '[env = ' +
+        this.env +
+        ']Only browser environments are currently supported'
+    );
+  }
+
+  private printBrowserMessage(level: number) {
     if (level <= this.level) {
       let functionName = CONSOLE_FUNCTIONS[level];
       let logFunction = this.printer[functionName];
@@ -204,11 +291,11 @@ export class Logger {
        */
 
       // prefix styles
-      for (let [msg, style] of this.prefixesAndStyles) {
-        if (style) {
+      for (let [msg, styleParts] of this.prefixesAndStyles) {
+        if (styleParts && styleParts.length > 0) {
           // with styles
           allMsgs += `%c[${msg}]`;
-          allStyles.push(style); // Only add style to allStyles if present
+          allStyles.push(makeStyleString(styleParts)); // Only add style to allStyles if present
         } else if (allStyles.length > 0) {
           // unstyled, but following something styled
           allMsgs += `%c[${msg}]`;
@@ -224,10 +311,10 @@ export class Logger {
         allStyles.push(CLEAR_STYLE);
       }
       // message styles
-      for (let [msg, style] of this.msgsAndStyles) {
-        if (style) {
+      for (let [msg, styleParts] of this.msgsAndStyles) {
+        if (styleParts && styleParts.length > 0) {
           allMsgs += `%c${msg}`;
-          allStyles.push(style); // only add style to allStyles if present
+          allStyles.push(makeStyleString(styleParts)); // only add style to allStyles if present
         } else if (allStyles.length > 0) {
           allMsgs += `%c${msg}`;
           allStyles.push(CLEAR_STYLE); // only add style to allStyles if present
@@ -257,7 +344,10 @@ export type LoggerWithStyles = Logger &
   };
 
 export interface LoggerConstructor {
-  new (level?: Level, printer?: Printer): LoggerWithStyles;
+  new (
+    level?: Level,
+    printerOrConfig?: Printer | Logger.Config
+  ): LoggerWithStyles;
 }
 
 export default Logger as LoggerConstructor;
