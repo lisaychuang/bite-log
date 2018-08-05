@@ -8,8 +8,8 @@ QUnit.test('Logger as a default export', assert => {
   assert.equal(typeof BL.default, 'function', 'it\'s a function');
   assert.deepEqual(
     Object.keys(BL),
-    ['default'],
-    'aside from types, there is a "default" export'
+    ['default', 'Level'],
+    'aside from types, there is a "default" and "Level" export'
   );
   assert.deepEqual(
     typeof BL.default.prototype,

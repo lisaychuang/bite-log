@@ -3,7 +3,7 @@ import logStyles, { CLEAR_STYLE } from './styles';
 import { isBrowser } from './utils';
 
 // Log levels (lower number are more severe)
-export const enum Level {
+export enum Level {
   error = 1,
   warn = 2,
   log = 3,
