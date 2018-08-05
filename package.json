@@ -1,5 +1,6 @@
 {
   "name": "bite-log",
+  "author": "Lisa Huang-North <lisa.yc.huang@gmail.com> (http://lambdalisa.com)",
   "version": "0.0.0-development",
   "description": "A bite size colorful and tagged logger for Node and browsers",
   "main": "dist/commonjs/src/index.js",
