@@ -72,9 +72,14 @@ myLogger.crimson.warn('A crimson warning');
 myLogger.deepSkyBlue.debug('STOP! Debug time');
 ```
 
-**Click on the image for an interactive playground!**
-
-[![Interactive text color example](https://i.imgur.com/qA8DpMT.png 'Text color example')](https://stackblitz.com/edit/bite-log-text-colors)
+<p align='center'>
+    <a href="https://stackblitz.com/edit/bite-log-text-colors">
+      <img height=300 src='https://i.imgur.com/qA8DpMT.png' />
+    </a>
+</p>
+<p align='center'>
+  <strong>Click on the image for an interactive text color example</strong>
+</p>
 
 ### Apply background colors
 
@@ -91,9 +96,14 @@ myLogger.bgChartreuse.debug('Debug session starts here');
 myLogger.bgViolet.log('All tests passed');
 ```
 
-**Click on the image for an interactive playground!**
-
-[![Background color example](https://i.imgur.com/86pHFTi.png 'Background color example')](https://stackblitz.com/edit/bite-log-background-colors)
+<p align='center'>
+    <a href="https://stackblitz.com/edit/bite-log-background-colors">
+      <img height=300 src='https://i.imgur.com/86pHFTi.png' />
+    </a>
+</p>
+<p align='center'>
+  <strong>Interactive background color example</strong>
+</p>
 
 ### Apply text styles
 
@@ -109,9 +119,14 @@ myLogger.bold.debug('BOLD for extra attention!');
 myLogger.italic.debug('Note to self -->>>>>>');
 ```
 
-**Click on the image for an interactive playground!**
-
-[![Text style example](https://i.imgur.com/porZrlC.png 'Text style example')](https://stackblitz.com/edit/bite-log-text-styles)
+<p align='center'>
+    <a href="https://stackblitz.com/edit/bite-log-text-styles">
+      <img height=300 src='https://i.imgur.com/porZrlC.png' />
+    </a>
+</p>
+<p align='center'>
+  <strong>Interactive text style example</strong>
+</p>
 
 ### Apply text sizes
 
@@ -127,9 +142,14 @@ myLogger.big.warn('Big warning');
 myLogger.huge.error('Look out! An error');
 ```
 
-**Click on the image for an interactive playground!**
-
-[![Text size example](https://i.imgur.com/mLW5Oy4.png 'Text size example')](https://stackblitz.com/edit/bite-log-text-sizes)
+<p align='center'>
+    <a href="https://stackblitz.com/edit/bite-log-text-sizes">
+      <img height=300 src='https://i.imgur.com/mLW5Oy4.png' />
+    </a>
+</p>
+<p align='center'>
+  <strong>Interactive text size example</strong>
+</p>
 
 ### Apply multiple colors and styles
 
@@ -149,9 +169,14 @@ myLogger.deepPink.huge.underline.warn('You can"t miss this warning msg!');
 myLogger.bgBlack.white.big.bold.log('Check out this Dark theme in my console');
 ```
 
-**Click on the image for an interactive playground!**
-
-[![Combined color and styles example](https://i.imgur.com/G98gZeK.png 'Combined color and styles example')](https://stackblitz.com/edit/bite-log-chained-styles)
+<p align='center'>
+    <a href="https://stackblitz.com/edit/bite-log-chained-styles">
+      <img height=300 src='https://i.imgur.com/G98gZeK.png' />
+    </a>
+</p>
+<p align='center'>
+  <strong>Interactive combined color and styles example</strong>
+</p>
 
 #### Different style combination applied to text segments
 
@@ -170,9 +195,14 @@ myLogger.bgYellow.italic.huge
   .red.bold.error(' Stacktrace this error below ⬇️');
 ```
 
-**Click on the image for an interactive playground!**
-
-[![Text segment styling example](https://i.imgur.com/8pvwDyu.png 'Text segment styling example')](https://stackblitz.com/edit/bite-log-chained-styles-text-segments)
+<p align='center'>
+    <a href="https://stackblitz.com/edit/bite-log-chained-styles-text-segments">
+      <img height=300 src='https://i.imgur.com/8pvwDyu.png' />
+    </a>
+</p>
+<p align='center'>
+  <strong>Interactive text segment styling example</strong>
+</p>
 
 ## Adding Prefixes / Tags
 
