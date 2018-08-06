@@ -94,7 +94,7 @@ QUnit.test(
       logger
     } = makeTestLogger(Level.debug);
     logger.bgAliceBlue.pushPrefix('AAA').pushPrefix('bbb');
-    logger.red.txt('should be red').log('should be "clear');
+    logger.red.txt('should be red').log('should be clear');
 
     assert.ok(
       log[0].indexOf(
@@ -107,7 +107,7 @@ QUnit.test(
       log[0],
 
       [
-        '%c[AAA]%c[bbb]%c %cshould be red%cshould be "clear',
+        '%c[AAA]%c[bbb]%c %cshould be red%cshould be clear',
         'background-color: aliceBlue;',
         'color: inherit; background-color: transparent;',
         'color: inherit; background-color: transparent;',

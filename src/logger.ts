@@ -119,7 +119,7 @@ export class Logger {
       // printerOrConfig is a Logger.Config
       const config: Logger.Config = printerOrConfig as Logger.Config;
       this.printer = config.printer;
-      this.env = config.env || isBrowser() ? 'browser' : 'node';
+      this.env = config.env || (isBrowser() ? 'browser' : 'node');
     }
     this.setupStyles();
   }
@@ -271,12 +271,9 @@ export class Logger {
   private printMessage(level: number) {
     if (this.env === 'browser') {
       return this.printBrowserMessage(level);
+    } else {
+      return this.printNodeMessage(level);
     }
-    throw new Error(
-      '[env = ' +
-        this.env +
-        ']Only browser environments are currently supported'
-    );
   }
 
   private printBrowserMessage(level: number) {
@@ -323,6 +320,41 @@ export class Logger {
         }
       }
       logFunction(allMsgs, ...allStyles);
+      this.msgsAndStyles = [];
+    }
+    // in printMessage, we need to deal with that array (i.e., printer.dir([1, 2, 3])  )
+    // and set the array of non-strings back to empty
+    // log.debug([1, 2, 3]);
+    for (let nonString of this.nonStringsToLog) {
+      this.printer.dir(nonString);
+    }
+    this.nonStringsToLog = [];
+  }
+
+  private printNodeMessage(level: number) {
+    if (level <= this.level) {
+      let functionName = CONSOLE_FUNCTIONS[level];
+      let logFunction = this.printer[functionName];
+      let allMsgs = '';
+
+      /** Flush all prefix and styles into msgsAndStyles
+       * Note: there may not be styles associated with a message or prefix!
+       */
+
+      // prefix styles
+      for (let [msg] of this.prefixesAndStyles) {
+        // all node messages are unstyled... for now
+        allMsgs += `[${msg}]`;
+      }
+      // white space between Prefix and Message
+      if (allMsgs.length > 0) {
+        allMsgs += ' '; // space between prefixes and rest of logged message
+      }
+      // message styles
+      for (let [msg] of this.msgsAndStyles) {
+        allMsgs += `${msg}`;
+      }
+      logFunction(allMsgs);
       this.msgsAndStyles = [];
     }
     // in printMessage, we need to deal with that array (i.e., printer.dir([1, 2, 3])  )
