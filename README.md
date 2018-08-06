@@ -74,7 +74,7 @@ myLogger.deepSkyBlue.debug('STOP! Debug time');
 
 <p align='center'>
     <a href="https://stackblitz.com/edit/bite-log-text-colors">
-      <img height=300 width=50% src='https://i.imgur.com/qA8DpMT.png' />
+      <img width=50% src='https://i.imgur.com/qA8DpMT.png' />
     </a>
 </p>
 <p align='center'>
@@ -98,7 +98,7 @@ myLogger.bgViolet.log('All tests passed');
 
 <p align='center'>
     <a href="https://stackblitz.com/edit/bite-log-background-colors">
-      <img height=300 width=50% src='https://i.imgur.com/86pHFTi.png' />
+      <img width=50% src='https://i.imgur.com/86pHFTi.png' />
     </a>
 </p>
 <p align='center'>
@@ -121,7 +121,7 @@ myLogger.italic.debug('Note to self -->>>>>>');
 
 <p align='center'>
     <a href="https://stackblitz.com/edit/bite-log-text-styles">
-      <img height=300 width=50% src='https://i.imgur.com/porZrlC.png' />
+      <img width=50% src='https://i.imgur.com/porZrlC.png' />
     </a>
 </p>
 <p align='center'>
@@ -144,7 +144,7 @@ myLogger.huge.error('Look out! An error');
 
 <p align='center'>
     <a href="https://stackblitz.com/edit/bite-log-text-sizes">
-      <img height=300 width=50% src='https://i.imgur.com/mLW5Oy4.png' />
+      <img width=50% src='https://i.imgur.com/mLW5Oy4.png' />
     </a>
 </p>
 <p align='center'>
@@ -171,7 +171,7 @@ myLogger.bgBlack.white.big.bold.log('Check out this Dark theme in my console');
 
 <p align='center'>
     <a href="https://stackblitz.com/edit/bite-log-chained-styles">
-      <img height=300 width=70% src='https://i.imgur.com/G98gZeK.png' />
+      <img width=70% src='https://i.imgur.com/G98gZeK.png' />
     </a>
 </p>
 <p align='center'>
@@ -197,7 +197,7 @@ myLogger.bgYellow.italic.huge
 
 <p align='center'>
     <a href="https://stackblitz.com/edit/bite-log-chained-styles-text-segments">
-      <img height=300 width=70% src='https://i.imgur.com/8pvwDyu.png' />
+      <img width=70% src='https://i.imgur.com/8pvwDyu.png' />
     </a>
 </p>
 <p align='center'>
