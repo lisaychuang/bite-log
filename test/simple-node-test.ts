@@ -1,4 +1,4 @@
-import Logger, { Level } from '../src/index';
+import { Level } from '../src/index';
 import { makeTestLogger } from './test-helpers';
 
 QUnit.module('Node.js simple logging cases');
