@@ -5,7 +5,7 @@
 
 A bite size (2KB) colorful and tagged logger for Node.js and browsers!
 
-## Installation
+## 🛠Installation
 
 ```sh
 npm install --save bite-log
@@ -17,7 +17,7 @@ Once installed, import the library in your JS files:
 import Logger from 'bite-log';
 ```
 
-## 4 Default Levels
+## 4️⃣Default Levels
 
 `bite-log` supports four methods in the debugging console (e.g. the [Web Console](https://developer.mozilla.org/en-US/docs/Tools/Web_Console) in browsers):
 
@@ -35,14 +35,14 @@ const myLogger = new Logger(Level.warn); // display error and warnings
 const myLogger = new Logger(Level.debug); // display all messages
 ```
 
-## Colors and Text Styles
+## 🎨Colors and Text Styles
 
-### 2 text sizes:
+### 2️⃣text sizes:
 
 - big (1.5em)
 - huge (2em)
 
-### 5 text styles:
+### 5️⃣ text styles:
 
 - bold
 - italic
@@ -50,13 +50,13 @@ const myLogger = new Logger(Level.debug); // display all messages
 - underline
 - strikethrough
 
-### 141 colors
+### 1️⃣4️⃣1️⃣ colors
 
 `bite-log` supports 141 [web safe colors](https://en.wikipedia.org/wiki/Web_colors) to be used for text color and background color styling.
 
 See the [complete list of supported colors here.](https://github.com/lisaychuang/bite-log/blob/master/src/colors.ts)
 
-## Usage
+## 📌Usage
 
 ### Apply text color
 
@@ -74,11 +74,11 @@ myLogger.deepSkyBlue.debug('STOP! Debug time');
 
 <p align='center'>
     <a href="https://stackblitz.com/edit/bite-log-text-colors">
-      <img height=300 src='https://i.imgur.com/qA8DpMT.png' />
+      <img height=300 width=50% src='https://i.imgur.com/qA8DpMT.png' />
     </a>
 </p>
 <p align='center'>
-  <strong>Click on the image for an interactive text color example</strong>
+  ⏩Click on the image for an interactive text color example
 </p>
 
 ### Apply background colors
@@ -98,11 +98,11 @@ myLogger.bgViolet.log('All tests passed');
 
 <p align='center'>
     <a href="https://stackblitz.com/edit/bite-log-background-colors">
-      <img height=300 src='https://i.imgur.com/86pHFTi.png' />
+      <img height=300 width=50% src='https://i.imgur.com/86pHFTi.png' />
     </a>
 </p>
 <p align='center'>
-  <strong>Interactive background color example</strong>
+   ⏩Interactive background color example
 </p>
 
 ### Apply text styles
@@ -121,11 +121,11 @@ myLogger.italic.debug('Note to self -->>>>>>');
 
 <p align='center'>
     <a href="https://stackblitz.com/edit/bite-log-text-styles">
-      <img height=300 src='https://i.imgur.com/porZrlC.png' />
+      <img height=300 width=50% src='https://i.imgur.com/porZrlC.png' />
     </a>
 </p>
 <p align='center'>
-  <strong>Interactive text style example</strong>
+   ⏩Interactive text style example
 </p>
 
 ### Apply text sizes
@@ -144,11 +144,11 @@ myLogger.huge.error('Look out! An error');
 
 <p align='center'>
     <a href="https://stackblitz.com/edit/bite-log-text-sizes">
-      <img height=300 src='https://i.imgur.com/mLW5Oy4.png' />
+      <img height=300 width=50% src='https://i.imgur.com/mLW5Oy4.png' />
     </a>
 </p>
 <p align='center'>
-  <strong>Interactive text size example</strong>
+   ⏩Interactive text size example
 </p>
 
 ### Apply multiple colors and styles
@@ -171,14 +171,14 @@ myLogger.bgBlack.white.big.bold.log('Check out this Dark theme in my console');
 
 <p align='center'>
     <a href="https://stackblitz.com/edit/bite-log-chained-styles">
-      <img height=300 src='https://i.imgur.com/G98gZeK.png' />
+      <img height=300 width=70% src='https://i.imgur.com/G98gZeK.png' />
     </a>
 </p>
 <p align='center'>
-  <strong>Interactive combined color and styles example</strong>
+   ⏩Interactive combined color and styles example
 </p>
 
-#### Different style combination applied to text segments
+#### Multple style combinations applied to text segments
 
 You can also divide a message into multiple segments, and apply a different style combination to each segment.
 
@@ -197,23 +197,23 @@ myLogger.bgYellow.italic.huge
 
 <p align='center'>
     <a href="https://stackblitz.com/edit/bite-log-chained-styles-text-segments">
-      <img height=300 src='https://i.imgur.com/8pvwDyu.png' />
+      <img height=300 width=70% src='https://i.imgur.com/8pvwDyu.png' />
     </a>
 </p>
 <p align='center'>
-  <strong>Interactive text segment styling example</strong>
+   ⏩Interactive text segment styling example
 </p>
 
-## Adding Prefixes / Tags
+## 🏷Adding Prefixes / Tags
 
-## Custom styles
+## 🖍Custom styles
 
-## Contributing
+## 🤩Contributing
 
 Bug reports and pull requests are welcome on GitHub at [bite-log repo](https://github.com/lisaychuang/bite-log), please open Issues to provide feedback.
 
 This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](https://github.com/ContributorCovenant/contributor_covenant) code of conduct.
 
-## License
+## 📗License
 
 This library is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
