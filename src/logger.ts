@@ -121,7 +121,6 @@ export class Logger {
       this.printer = config.printer;
       this.env = config.env || (isBrowser() ? 'browser' : 'node');
     }
-    this.setupStyles();
   }
 
   /**
@@ -230,40 +229,6 @@ export class Logger {
   }
 
   /**
-   * According to the logStyles in './style.ts', set up
-   * a property for each, kind of like
-   * ```ts
-   *   {
-   *     get red() { }, //  store "color: red"
-   *     get bgYellow() { } // store "background-color: yellow"
-   *   }
-   * ```
-   * Ultimately, we want to be able to do something like
-   * logger.red.bgYellow.txt('Hello red and yellow')
-   */
-  private setupStyles() {
-    // Loop over each style name (i.e. "red")
-    for (let styleName in logStyles) {
-      // Make sure the property is on the instance, not the prototype
-      if (logStyles.hasOwnProperty(styleName)) {
-        // Define a new property on this, of name c (i.e. "red")
-        //  that is getter-based (instead of value based)
-        const self = this;
-        Object.defineProperty(this, styleName, {
-          get() {
-            /**
-             * Store the styleName, to be dealt with the next time
-             * a `.txt()`, `.log()`, `.debug()`, `.error()` or `.warn()` call is made
-             */
-            self.stylesInProgress.push(styleName);
-            return this;
-          }
-        });
-      }
-    }
-  }
-
-  /**
    * Actually print the message to the printer (maybe console.*)
    * @param level the level of the current message
    * @param msg the message text
@@ -367,6 +332,39 @@ export class Logger {
   }
 }
 
+/**
+ * According to the logStyles in './style.ts', set up
+ * a property for each, kind of like
+ * ```ts
+ *   {
+ *     get red() { }, //  store "color: red"
+ *     get bgYellow() { } // store "background-color: yellow"
+ *   }
+ * ```
+ * Ultimately, we want to be able to do something like
+ * logger.red.bgYellow.txt('Hello red and yellow')
+ */
+function setupStyles() {
+  // Loop over each style name (i.e. "red")
+  for (let styleName in logStyles) {
+    // Make sure the property is on the instance, not the prototype
+    if (logStyles.hasOwnProperty(styleName)) {
+      // Define a new property on this, of name c (i.e. "red")
+      //  that is getter-based (instead of value based)
+      Object.defineProperty(Logger.prototype, styleName, {
+        get() {
+          /**
+           * Store the styleName, to be dealt with the next time
+           * a `.txt()`, `.log()`, `.debug()`, `.error()` or `.warn()` call is made
+           */
+          this.stylesInProgress.push(styleName);
+          return this;
+        }
+      });
+    }
+  }
+}
+
 export type LoggerWithStyles = Logger &
   {
     [K in keyof (TextColors &
@@ -381,5 +379,7 @@ export interface LoggerConstructor {
     printerOrConfig?: Printer | Logger.Config
   ): LoggerWithStyles;
 }
+
+setupStyles(); // install all the color getter functions onto the prototype
 
 export default Logger as LoggerConstructor;
