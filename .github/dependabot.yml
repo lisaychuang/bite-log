@@ -1,0 +1,30 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "11:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: ember-cli
+    versions:
+    - 3.24.0
+    - 3.25.0
+    - 3.25.2
+    - 3.25.3
+    - 3.26.0
+  - dependency-name: y18n
+    versions:
+    - 4.0.1
+  - dependency-name: qunit
+    versions:
+    - 2.14.0
+    - 2.14.1
+  - dependency-name: semantic-release
+    versions:
+    - 17.3.7
+    - 17.3.9
+  - dependency-name: handlebars
+    versions:
+    - 4.7.6
